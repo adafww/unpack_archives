@@ -42,10 +42,18 @@ for archive in "${archives[@]}"; do
     
     case "$archive" in
       *.zip)
-        unzip -q "$archive" -d "$output_dir/$folder_name"
+        if unzip -q "$archive" -d "$output_dir/$folder_name"; then
+          echo "Распакован: $archive"
+        else
+          echo "Ошибка распаковки: $archive"
+        fi
         ;;
       *.rar)
-        unrar x -inul "$archive" "$output_dir/$folder_name/"
+        if unrar x -inul "$archive" "$output_dir/$folder_name/"; then
+          echo "Распакован: $archive"
+        else
+          echo "Ошибка распаковки: $archive"
+        fi
         ;;
       *)
         echo "Неизвестный тип архива: $archive"
