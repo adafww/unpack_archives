@@ -15,7 +15,17 @@ fi
 mkdir -p "$output_dir"
 
 # Получаем список всех zip и rar архивов в директории
-archives=("$archive_dir"/*.zip "$archive_dir"/*.rar)
+zip_archives=("$archive_dir"/*.zip)
+rar_archives=("$archive_dir"/*.rar)
+
+# Объединяем массивы и фильтруем только существующие файлы
+archives=()
+for archive in "${zip_archives[@]}" "${rar_archives[@]}"; do
+  if [ -f "$archive" ]; then
+    archives+=("$archive")
+  fi
+done
+
 total_archives=${#archives[@]}
 processed_archives=0
 
