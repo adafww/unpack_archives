@@ -14,13 +14,14 @@ fi
 # Создаём папку для распаковки рядом со скриптом
 mkdir -p "$output_dir"
 
-# Получаем список всех zip и rar архивов в директории
+# Получаем список всех zip, rar и 7z архивов в директории
 zip_archives=("$archive_dir"/*.zip)
 rar_archives=("$archive_dir"/*.rar)
+sevenz_archives=("$archive_dir"/*.7z)
 
 # Объединяем массивы и фильтруем только существующие файлы
 archives=()
-for archive in "${zip_archives[@]}" "${rar_archives[@]}"; do
+for archive in "${zip_archives[@]}" "${rar_archives[@]}" "${sevenz_archives[@]}"; do
   if [ -f "$archive" ]; then
     archives+=("$archive")
   fi
@@ -31,7 +32,7 @@ processed_archives=0
 
 # Проверяем, есть ли архивы
 if [ $total_archives -eq 0 ]; then
-  echo "Нет zip или rar архивов в директории $archive_dir"
+  echo "Нет zip, rar или 7z архивов в директории $archive_dir"
   exit 1
 fi
 
@@ -60,6 +61,13 @@ for archive in "${archives[@]}"; do
         ;;
       *.rar)
         if unrar x -inul "$archive" "$output_dir/$folder_name/"; then
+          echo "Распакован: $archive"
+        else
+          echo "Ошибка распаковки: $archive"
+        fi
+        ;;
+      *.7z)
+        if 7z x -bd -o"$output_dir/$folder_name" "$archive" > /dev/null; then
           echo "Распакован: $archive"
         else
           echo "Ошибка распаковки: $archive"
